@@ -41,6 +41,7 @@
             this.replaceSignCheckBox = new System.Windows.Forms.CheckBox();
             this.deleteReasonCheckBox = new System.Windows.Forms.CheckBox();
             this.startFixButton = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             this.tableLayoutPanel1.Controls.Add(this.selectOutDirButton, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.startFixButton, 1, 4);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
@@ -68,7 +69,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(543, 205);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(543, 202);
             this.tableLayoutPanel1.TabIndex = 0;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
@@ -147,7 +148,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 115);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(374, 87);
+            this.groupBox1.Size = new System.Drawing.Size(374, 84);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Исправления:";
@@ -189,7 +190,7 @@
             // startFixButton
             // 
             this.startFixButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.startFixButton.Location = new System.Drawing.Point(383, 130);
+            this.startFixButton.Location = new System.Drawing.Point(383, 129);
             this.startFixButton.Name = "startFixButton";
             this.startFixButton.Size = new System.Drawing.Size(157, 56);
             this.startFixButton.TabIndex = 7;
@@ -197,12 +198,22 @@
             this.startFixButton.UseVisualStyleBackColor = true;
             this.startFixButton.Click += new System.EventHandler(this.StartFixButton_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(3, 208);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(537, 16);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.TabIndex = 8;
+            // 
             // mainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(543, 205);
+            this.ClientSize = new System.Drawing.Size(543, 227);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.progressBar1);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -231,6 +242,7 @@
         private System.Windows.Forms.CheckBox replaceSignCheckBox;
         private System.Windows.Forms.CheckBox deleteReasonCheckBox;
         private System.Windows.Forms.Button startFixButton;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

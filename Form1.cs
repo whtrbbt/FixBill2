@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -12,7 +13,7 @@ namespace FixBill2
     {
         string INDir = @Properties.Settings.Default.INDIR;
         string OUTDir = @Properties.Settings.Default.OUTDIR;
-        
+ 
         public mainWindow()
         {
             InitializeComponent();
@@ -80,10 +81,10 @@ namespace FixBill2
             var dirOUT = new DirectoryInfo(@outDir); //папка с исходящими файлами  
             string dirName = "";
 
+
             foreach (DirectoryInfo dir in dirIN.GetDirectories()) // ищем все подкаталоги в каталоге dirIN
             {
                 dirName = Path.GetFileName(dir.FullName); // получаем имя текущего подкаталога
-                Console.WriteLine(dirName);
                 dirName = dirOUT + @"\" + dirName;
                 if (!Directory.Exists(dirName))
                     Directory.CreateDirectory(dirName);
@@ -95,12 +96,18 @@ namespace FixBill2
 
         static void FixFiles(string inDir, string outDir)
         {
+
             var dirIN = new DirectoryInfo(@inDir); // папка с входящими файлами 
             var dirOUT = new DirectoryInfo(@outDir); // папка с исходящими файлами 
+
+            //int quantityOfFile = dirIN.GetFiles().Length; // получаем количество файлов в папке для ProgressBar
+
             DirectoryInfo tmpDir; // временная папка для создания архива
             DirectoryInfo tmpUnZipDir; //временная папка для распаковки архива
             string fileName = "";
             string outFileName = "";
+
+
 
             foreach (FileInfo file in dirIN.GetFiles())
             {
@@ -219,12 +226,34 @@ namespace FixBill2
             excelcells.EntireRow.RowHeight = 60;
         }
 
-        private void StartFixButton_Click(object sender, EventArgs e)
+        private async void StartFixButton_Click(object sender, EventArgs e)
         {
-            mainWindow.ActiveForm.Enabled = false;
-            FixDir(Properties.Settings.Default.INDIR, Properties.Settings.Default.OUTDIR);
-            MessageBox.Show("Все файлы обработаны.", "Готово!");
-            mainWindow.ActiveForm.Enabled = true;
+            ProgressBar progressBar = progressBar1;
+
+            tableLayoutPanel1.Enabled = false;
+
+            progressBar.Visible = true;
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.MarqueeAnimationSpeed = 30;
+            try
+            {
+                await Task.Run( () => FixDir(Properties.Settings.Default.INDIR, Properties.Settings.Default.OUTDIR));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                MessageBox.Show("Все файлы обработаны.", "Готово!");
+            }
+            
+   
+            progressBar.Style = ProgressBarStyle.Continuous;
+            progressBar.MarqueeAnimationSpeed = 0;
+            progressBar.Visible = false;
+            tableLayoutPanel1.Enabled = true;
         }
     }
 }
