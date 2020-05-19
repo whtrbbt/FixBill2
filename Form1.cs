@@ -75,7 +75,7 @@ namespace FixBill2
             Properties.Settings.Default.Save();
         }
 
-        static void FixDir(string inDir, string outDir)
+        static void FixDir(ref Excel.Application exApp, string inDir, string outDir)
         {
             var dirIN = new DirectoryInfo(@inDir); //папка с входящими файлами 
             var dirOUT = new DirectoryInfo(@outDir); //папка с исходящими файлами  
@@ -88,13 +88,13 @@ namespace FixBill2
                 dirName = dirOUT + @"\" + dirName;
                 if (!Directory.Exists(dirName))
                     Directory.CreateDirectory(dirName);
-                FixDir(dir.FullName, dirName);
+                FixDir(ref exApp, dir.FullName, dirName);
 
             }
-            FixFiles(dirIN.FullName, dirOUT.FullName);
+            FixFiles(ref exApp, dirIN.FullName, dirOUT.FullName);
         }
 
-        static void FixFiles(string inDir, string outDir)
+        static void FixFiles(ref Excel.Application exApp, string inDir, string outDir)
         {
 
             var dirIN = new DirectoryInfo(@inDir); // папка с входящими файлами 
@@ -116,7 +116,7 @@ namespace FixBill2
                 {
                     tmpDir = CreateTempDir();
                     tmpUnZipDir = UnzipFileToTempDir(file.FullName);
-                    FixDir(tmpUnZipDir.FullName, tmpDir.FullName);
+                    FixDir(ref exApp, tmpUnZipDir.FullName, tmpDir.FullName);
                     outFileName = @outDir + @"\" + fileName;
                     DeleteExistFile(outFileName);
                     ZipFile.CreateFromDirectory(tmpDir.FullName, outFileName);
@@ -128,7 +128,7 @@ namespace FixBill2
                     fileName = RemoveInvalidFilePathCharacters(fileName, "");
                     outFileName = @outDir + @"\" + fileName;
                     DeleteExistFile(outFileName);
-                    FixBill(@file.FullName, outFileName);
+                    FixBill(ref exApp, @file.FullName, outFileName);
                 }
             }
         }
@@ -162,18 +162,18 @@ namespace FixBill2
         }
 
 
-        public static void FixBill(string inFileName, string outFileName = "")
+        public static void FixBill(ref Excel.Application exApp, string inFileName, string outFileName = "")
         {
             // Объявляем приложение
-            Excel.Application exc = new Microsoft.Office.Interop.Excel.Application();
+            //Excel.Application exc = new Microsoft.Office.Interop.Excel.Application();
 
-            Excel.XlReferenceStyle RefStyle = exc.ReferenceStyle;
+            Excel.XlReferenceStyle RefStyle = exApp.ReferenceStyle;
 
             Excel.Workbook wb = null;
 
             try
             {
-                wb = exc.Workbooks.Add(inFileName); // !!! 
+                wb = exApp.Workbooks.Add(inFileName); // !!! 
             }
             catch (System.Exception ex)
             {
@@ -192,11 +192,13 @@ namespace FixBill2
                 wb.SaveAs(outFileName);
             else
                 wb.SaveAs(inFileName);
-            exc.Quit();
+            
+            wb.Saved = true;
+            wb.Close();
 
         }
 
-        public static void FixReason(Excel.Workbook wb, string reason = "")
+        public static void FixReason(in Excel.Workbook wb, string reason = "")
         {
             Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
 
@@ -206,7 +208,7 @@ namespace FixBill2
             excelcells.Value2 = reason;
         }
 
-        public static void FixManager(Excel.Workbook wb, string manager = "")
+        public static void FixManager(in Excel.Workbook wb, string manager = "")
         {
             Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
 
@@ -228,6 +230,8 @@ namespace FixBill2
 
         private async void StartFixButton_Click(object sender, EventArgs e)
         {
+
+            Excel.Application exc = new Microsoft.Office.Interop.Excel.Application();
             ProgressBar progressBar = progressBar1;
 
             tableLayoutPanel1.Enabled = false;
@@ -237,7 +241,7 @@ namespace FixBill2
             progressBar.MarqueeAnimationSpeed = 30;
             try
             {
-                await Task.Run( () => FixDir(Properties.Settings.Default.INDIR, Properties.Settings.Default.OUTDIR));
+                await Task.Run( () => FixDir(ref exc, Properties.Settings.Default.INDIR, Properties.Settings.Default.OUTDIR));
             }
             catch (Exception)
             {
@@ -254,6 +258,10 @@ namespace FixBill2
             progressBar.MarqueeAnimationSpeed = 0;
             progressBar.Visible = false;
             tableLayoutPanel1.Enabled = true;
+
+            exc.DisplayAlerts = false;
+            //wb.Close();
+            exc.Quit();
         }
     }
 }
