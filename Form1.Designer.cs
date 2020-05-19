@@ -1,6 +1,6 @@
 ﻿namespace FixBill2
 {
-    partial class Form1
+    partial class mainWindow
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainWindow));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.inDirTextBox = new System.Windows.Forms.TextBox();
@@ -40,7 +40,7 @@
             this.unzipCheckBox = new System.Windows.Forms.CheckBox();
             this.replaceSignCheckBox = new System.Windows.Forms.CheckBox();
             this.deleteReasonCheckBox = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.startFixButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +58,7 @@
             this.tableLayoutPanel1.Controls.Add(this.outDirTextBox, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.selectOutDirButton, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.startFixButton, 1, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -155,6 +155,7 @@
             // unzipCheckBox
             // 
             this.unzipCheckBox.AutoSize = true;
+            this.unzipCheckBox.Enabled = false;
             this.unzipCheckBox.Location = new System.Drawing.Point(3, 62);
             this.unzipCheckBox.Name = "unzipCheckBox";
             this.unzipCheckBox.Size = new System.Drawing.Size(153, 17);
@@ -185,17 +186,18 @@
             this.deleteReasonCheckBox.UseVisualStyleBackColor = true;
             this.deleteReasonCheckBox.CheckedChanged += new System.EventHandler(this.DeleteReasonCheckBox_CheckedChanged);
             // 
-            // button1
+            // startFixButton
             // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button1.Location = new System.Drawing.Point(383, 130);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 56);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Обработать";
-            this.button1.UseVisualStyleBackColor = true;
+            this.startFixButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.startFixButton.Location = new System.Drawing.Point(383, 130);
+            this.startFixButton.Name = "startFixButton";
+            this.startFixButton.Size = new System.Drawing.Size(157, 56);
+            this.startFixButton.TabIndex = 7;
+            this.startFixButton.Text = "Обработать";
+            this.startFixButton.UseVisualStyleBackColor = true;
+            this.startFixButton.Click += new System.EventHandler(this.StartFixButton_Click);
             // 
-            // Form1
+            // mainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -205,7 +207,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "mainWindow";
             this.Text = "FixBill - обработка счетов из БСТ";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -228,7 +230,7 @@
         private System.Windows.Forms.CheckBox unzipCheckBox;
         private System.Windows.Forms.CheckBox replaceSignCheckBox;
         private System.Windows.Forms.CheckBox deleteReasonCheckBox;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button startFixButton;
     }
 }
 

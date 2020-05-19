@@ -1,15 +1,19 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.IO;
+using System.IO.Compression;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FixBill2
 {
-    public partial class Form1 : Form
+    public partial class mainWindow : Form
     {
-        string INDir;
-        string OUTDir;
+        string INDir = @Properties.Settings.Default.INDIR;
+        string OUTDir = @Properties.Settings.Default.OUTDIR;
         
-        public Form1()
+        public mainWindow()
         {
             InitializeComponent();
             inDirTextBox.Text = Properties.Settings.Default.INDIR;
@@ -68,6 +72,159 @@ namespace FixBill2
         {
             Properties.Settings.Default.UNZIP = unzipCheckBox.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        static void FixDir(string inDir, string outDir)
+        {
+            var dirIN = new DirectoryInfo(@inDir); //папка с входящими файлами 
+            var dirOUT = new DirectoryInfo(@outDir); //папка с исходящими файлами  
+            string dirName = "";
+
+            foreach (DirectoryInfo dir in dirIN.GetDirectories()) // ищем все подкаталоги в каталоге dirIN
+            {
+                dirName = Path.GetFileName(dir.FullName); // получаем имя текущего подкаталога
+                Console.WriteLine(dirName);
+                dirName = dirOUT + @"\" + dirName;
+                if (!Directory.Exists(dirName))
+                    Directory.CreateDirectory(dirName);
+                FixDir(dir.FullName, dirName);
+
+            }
+            FixFiles(dirIN.FullName, dirOUT.FullName);
+        }
+
+        static void FixFiles(string inDir, string outDir)
+        {
+            var dirIN = new DirectoryInfo(@inDir); // папка с входящими файлами 
+            var dirOUT = new DirectoryInfo(@outDir); // папка с исходящими файлами 
+            DirectoryInfo tmpDir; // временная папка для создания архива
+            DirectoryInfo tmpUnZipDir; //временная папка для распаковки архива
+            string fileName = "";
+            string outFileName = "";
+
+            foreach (FileInfo file in dirIN.GetFiles())
+            {
+                fileName = Path.GetFileName(file.FullName);
+                if (Path.GetExtension(fileName) == ".zip")
+                {
+                    tmpDir = CreateTempDir();
+                    tmpUnZipDir = UnzipFileToTempDir(file.FullName);
+                    FixDir(tmpUnZipDir.FullName, tmpDir.FullName);
+                    outFileName = @outDir + @"\" + fileName;
+                    DeleteExistFile(outFileName);
+                    ZipFile.CreateFromDirectory(tmpDir.FullName, outFileName);
+                    tmpDir.Delete(true);
+                    tmpUnZipDir.Delete(true);
+                }
+                else //Path.GetExtension(fileName) <> ".zip"
+                {
+                    fileName = RemoveInvalidFilePathCharacters(fileName, "");
+                    outFileName = @outDir + @"\" + fileName;
+                    DeleteExistFile(outFileName);
+                    FixBill(@file.FullName, outFileName);
+                }
+            }
+        }
+        public static void DeleteExistFile(string fileName)
+        {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+        }
+
+        public static DirectoryInfo CreateTempDir()
+        // Создает временную папку и возращает ссылку на нее
+        {
+            DirectoryInfo tempDir;
+            tempDir = Directory.CreateDirectory(Path.GetTempPath() + Path.GetRandomFileName());
+            return tempDir;
+        }
+
+        public static DirectoryInfo UnzipFileToTempDir(string fileName)
+        // Распаковывает архив во временную папку и возвращает ссылку на неё.      
+        {
+            DirectoryInfo tempDir;
+            tempDir = CreateTempDir();
+            ZipFile.ExtractToDirectory(fileName, @tempDir.FullName);
+            return tempDir;
+        }
+
+        public static string RemoveInvalidFilePathCharacters(string filename, string replaceChar)
+        // Удаляет запрещенные символы в именах файлов      
+        {
+            return Regex.Replace(filename, "[\\[\\]]+", replaceChar, RegexOptions.Compiled);
+        }
+
+
+        public static void FixBill(string inFileName, string outFileName = "")
+        {
+            // Объявляем приложение
+            Excel.Application exc = new Microsoft.Office.Interop.Excel.Application();
+
+            Excel.XlReferenceStyle RefStyle = exc.ReferenceStyle;
+
+            Excel.Workbook wb = null;
+
+            try
+            {
+                wb = exc.Workbooks.Add(inFileName); // !!! 
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception("Не удалось загрузить файл! " + inFileName + "\n" + ex.Message);
+            }
+            //Console.WriteLine("Файл найден, начинаю работу. Это может занять несколько минут.");
+            //Excel.Sheets excelsheets;
+
+
+            if (Properties.Settings.Default.DELETE_REASON)
+                FixReason(wb);
+            if (Properties.Settings.Default.REPLACE_SIGN)
+                FixManager(wb, "Заместитель генерального директора\nРоманова Ю.В.\nпо доверенности № 17 от 27.03.2020");
+
+            if (outFileName != "")
+                wb.SaveAs(outFileName);
+            else
+                wb.SaveAs(inFileName);
+            exc.Quit();
+
+        }
+
+        public static void FixReason(Excel.Workbook wb, string reason = "")
+        {
+            Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
+
+            Excel.Range excelcells;
+
+            excelcells = wsh.get_Range("C19", "C19");
+            excelcells.Value2 = reason;
+        }
+
+        public static void FixManager(Excel.Workbook wb, string manager = "")
+        {
+            Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
+
+            Excel.Range excelcells;
+            Excel.Range currentFind = null;
+            //Excel.Range firstFind = null;
+
+            excelcells = wsh.get_Range("C30");
+            currentFind = excelcells.Find("Руководитель", Type.Missing,
+          Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart,
+          Excel.XlSearchOrder.xlByRows, Excel.XlSearchDirection.xlNext);
+            excelcells = currentFind.EntireRow;
+            excelcells = excelcells.Cells[1, 3];
+            excelcells.Value2 = manager;
+            excelcells.EntireRow.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+            excelcells.EntireRow.VerticalAlignment = Excel.XlVAlign.xlVAlignBottom;
+            excelcells.EntireRow.RowHeight = 60;
+        }
+
+        private void StartFixButton_Click(object sender, EventArgs e)
+        {
+            mainWindow.ActiveForm.Enabled = false;
+            FixDir(Properties.Settings.Default.INDIR, Properties.Settings.Default.OUTDIR);
+            MessageBox.Show("Все файлы обработаны.", "Готово!");
+            mainWindow.ActiveForm.Enabled = true;
         }
     }
 }
