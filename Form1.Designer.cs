@@ -37,9 +37,9 @@
             this.outDirTextBox = new System.Windows.Forms.TextBox();
             this.selectOutDirButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.unzipCheckBox = new System.Windows.Forms.CheckBox();
+            this.replaceSignCheckBox = new System.Windows.Forms.CheckBox();
+            this.deleteReasonCheckBox = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -104,7 +104,7 @@
             this.selectInDirButton.TabIndex = 2;
             this.selectInDirButton.Text = "Выбрать";
             this.selectInDirButton.UseVisualStyleBackColor = true;
-            this.selectInDirButton.Click += new System.EventHandler(this.selectInDirButton_Click);
+            this.selectInDirButton.Click += new System.EventHandler(this.SelectInDirButton_Click);
             // 
             // label2
             // 
@@ -137,13 +137,13 @@
             this.selectOutDirButton.TabIndex = 5;
             this.selectOutDirButton.Text = "Выбрать";
             this.selectOutDirButton.UseVisualStyleBackColor = true;
-            this.selectOutDirButton.Click += new System.EventHandler(this.selectOutDirButton_Click);
+            this.selectOutDirButton.Click += new System.EventHandler(this.SelectOutDirButton_Click);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.checkBox3);
-            this.groupBox1.Controls.Add(this.checkBox2);
-            this.groupBox1.Controls.Add(this.checkBox1);
+            this.groupBox1.Controls.Add(this.unzipCheckBox);
+            this.groupBox1.Controls.Add(this.replaceSignCheckBox);
+            this.groupBox1.Controls.Add(this.deleteReasonCheckBox);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 115);
             this.groupBox1.Name = "groupBox1";
@@ -152,35 +152,38 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Исправления:";
             // 
-            // checkBox1
+            // unzipCheckBox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(3, 16);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(151, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Убрать основание счета";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.unzipCheckBox.AutoSize = true;
+            this.unzipCheckBox.Location = new System.Drawing.Point(3, 62);
+            this.unzipCheckBox.Name = "unzipCheckBox";
+            this.unzipCheckBox.Size = new System.Drawing.Size(153, 17);
+            this.unzipCheckBox.TabIndex = 2;
+            this.unzipCheckBox.Text = "Извлечь счета из архива";
+            this.unzipCheckBox.UseVisualStyleBackColor = true;
+            this.unzipCheckBox.CheckedChanged += new System.EventHandler(this.UnzipCheckBox_CheckedChanged);
             // 
-            // checkBox2
+            // replaceSignCheckBox
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(3, 39);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(194, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Заменить подпись руководителя";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.replaceSignCheckBox.AutoSize = true;
+            this.replaceSignCheckBox.Location = new System.Drawing.Point(3, 39);
+            this.replaceSignCheckBox.Name = "replaceSignCheckBox";
+            this.replaceSignCheckBox.Size = new System.Drawing.Size(194, 17);
+            this.replaceSignCheckBox.TabIndex = 1;
+            this.replaceSignCheckBox.Text = "Заменить подпись руководителя";
+            this.replaceSignCheckBox.UseVisualStyleBackColor = true;
+            this.replaceSignCheckBox.CheckedChanged += new System.EventHandler(this.ReplaceSignCheckBox_CheckedChanged);
             // 
-            // checkBox3
+            // deleteReasonCheckBox
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(3, 62);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(153, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Извлечь счета из архива";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.deleteReasonCheckBox.AutoSize = true;
+            this.deleteReasonCheckBox.Location = new System.Drawing.Point(3, 16);
+            this.deleteReasonCheckBox.Name = "deleteReasonCheckBox";
+            this.deleteReasonCheckBox.Size = new System.Drawing.Size(151, 17);
+            this.deleteReasonCheckBox.TabIndex = 0;
+            this.deleteReasonCheckBox.Text = "Убрать основание счета";
+            this.deleteReasonCheckBox.UseVisualStyleBackColor = true;
+            this.deleteReasonCheckBox.CheckedChanged += new System.EventHandler(this.DeleteReasonCheckBox_CheckedChanged);
             // 
             // button1
             // 
@@ -222,9 +225,9 @@
         private System.Windows.Forms.TextBox outDirTextBox;
         private System.Windows.Forms.Button selectOutDirButton;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox unzipCheckBox;
+        private System.Windows.Forms.CheckBox replaceSignCheckBox;
+        private System.Windows.Forms.CheckBox deleteReasonCheckBox;
         private System.Windows.Forms.Button button1;
     }
 }
