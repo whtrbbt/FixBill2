@@ -193,7 +193,8 @@ namespace FixBill2
             //Console.WriteLine("Файл найден, начинаю работу. Это может занять несколько минут.");
             //Excel.Sheets excelsheets;
 
-
+            FixAdress(wb);
+            
             if (Properties.Settings.Default.DELETE_REASON)
                 FixReason(wb);
             if (Properties.Settings.Default.REPLACE_SIGN)
@@ -237,6 +238,31 @@ namespace FixBill2
             excelcells.EntireRow.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
             excelcells.EntireRow.VerticalAlignment = Excel.XlVAlign.xlVAlignBottom;
             excelcells.EntireRow.RowHeight = 60;
+        }
+
+        public static void FixAdress(in Excel.Workbook wb, double rowHeight = 12.75, int trimLenght = 90, int rowAmount = 2)
+        // Исправляет высоту строки адреса Заказчика
+        {
+            string adress;
+            int adressLenght;
+            double adressRowHeight;
+
+            Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
+
+            Excel.Range excelcells;
+            excelcells = wsh.get_Range("C16");
+            adress = excelcells.Value2;
+            adressLenght = adress.Length;
+            if (((adressLenght / trimLenght)>rowAmount) | ((adressLenght % trimLenght) > 0))
+            {
+                adressRowHeight = (adressLenght / trimLenght) * rowHeight;
+                if ((adressLenght % trimLenght) > 0)
+                    adressRowHeight += rowHeight;
+                excelcells = wsh.get_Range("A17");
+                excelcells.Cells.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
+                excelcells.Cells.VerticalAlignment = Excel.XlVAlign.xlVAlignTop;
+                excelcells.EntireRow.RowHeight = adressRowHeight;
+            }
         }
 
         private async void StartFixButton_Click(object sender, EventArgs e)
