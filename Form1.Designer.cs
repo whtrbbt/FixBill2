@@ -156,7 +156,6 @@
             // unzipCheckBox
             // 
             this.unzipCheckBox.AutoSize = true;
-            this.unzipCheckBox.Enabled = false;
             this.unzipCheckBox.Location = new System.Drawing.Point(3, 62);
             this.unzipCheckBox.Name = "unzipCheckBox";
             this.unzipCheckBox.Size = new System.Drawing.Size(153, 17);

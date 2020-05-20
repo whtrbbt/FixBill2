@@ -98,15 +98,13 @@ namespace FixBill2
         {
 
             var dirIN = new DirectoryInfo(@inDir); // папка с входящими файлами 
-            var dirOUT = new DirectoryInfo(@outDir); // папка с исходящими файлами 
-
-            //int quantityOfFile = dirIN.GetFiles().Length; // получаем количество файлов в папке для ProgressBar
+            var dirOUT = new DirectoryInfo(@outDir); // папка с исходящими файлами             
 
             DirectoryInfo tmpDir; // временная папка для создания архива
             DirectoryInfo tmpUnZipDir; //временная папка для распаковки архива
             string fileName = "";
             string outFileName = "";
-
+            string dirName;
 
 
             foreach (FileInfo file in dirIN.GetFiles())
@@ -114,16 +112,29 @@ namespace FixBill2
                 fileName = Path.GetFileName(file.FullName);
                 if (Path.GetExtension(fileName) == ".zip")
                 {
-                    tmpDir = CreateTempDir();
-                    tmpUnZipDir = UnzipFileToTempDir(file.FullName);
-                    FixDir(ref exApp, tmpUnZipDir.FullName, tmpDir.FullName);
-                    outFileName = @outDir + @"\" + fileName;
-                    DeleteExistFile(outFileName);
-                    ZipFile.CreateFromDirectory(tmpDir.FullName, outFileName);
-                    tmpDir.Delete(true);
-                    tmpUnZipDir.Delete(true);
+                    if (Properties.Settings.Default.UNZIP)
+                    {                        
+                        tmpUnZipDir = UnzipFileToTempDir(file.FullName);
+                        dirName = Path.GetFileNameWithoutExtension(file.FullName); // получаем имя папки из имени файла архива
+                        dirName = dirOUT + @"\" + dirName;
+                        if (!Directory.Exists(dirName))
+                            Directory.CreateDirectory(dirName);                        
+                        FixDir(ref exApp, tmpUnZipDir.FullName, dirName);
+                        tmpUnZipDir.Delete(true);
+                    }
+                    else
+                    {
+                        tmpDir = CreateTempDir();
+                        tmpUnZipDir = UnzipFileToTempDir(file.FullName);
+                        FixDir(ref exApp, tmpUnZipDir.FullName, tmpDir.FullName);
+                        outFileName = @outDir + @"\" + fileName;
+                        DeleteExistFile(outFileName);
+                        ZipFile.CreateFromDirectory(tmpDir.FullName, outFileName);
+                        tmpDir.Delete(true);
+                        tmpUnZipDir.Delete(true);
+                    }
                 }
-                else //Path.GetExtension(fileName) <> ".zip"
+                else if (Path.GetExtension(fileName) == ".xlsx")
                 {
                     fileName = RemoveInvalidFilePathCharacters(fileName, "");
                     outFileName = @outDir + @"\" + fileName;
