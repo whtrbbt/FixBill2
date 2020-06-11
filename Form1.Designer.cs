@@ -42,6 +42,7 @@
             this.deleteReasonCheckBox = new System.Windows.Forms.CheckBox();
             this.startFixButton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.PayWithDebtCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -69,7 +70,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(543, 202);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(543, 227);
             this.tableLayoutPanel1.TabIndex = 0;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
@@ -142,13 +143,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.PayWithDebtCheckBox);
             this.groupBox1.Controls.Add(this.unzipCheckBox);
             this.groupBox1.Controls.Add(this.replaceSignCheckBox);
             this.groupBox1.Controls.Add(this.deleteReasonCheckBox);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 115);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(374, 84);
+            this.groupBox1.Size = new System.Drawing.Size(374, 109);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Исправления:";
@@ -156,7 +158,7 @@
             // unzipCheckBox
             // 
             this.unzipCheckBox.AutoSize = true;
-            this.unzipCheckBox.Location = new System.Drawing.Point(3, 62);
+            this.unzipCheckBox.Location = new System.Drawing.Point(3, 86);
             this.unzipCheckBox.Name = "unzipCheckBox";
             this.unzipCheckBox.Size = new System.Drawing.Size(153, 17);
             this.unzipCheckBox.TabIndex = 2;
@@ -189,7 +191,7 @@
             // startFixButton
             // 
             this.startFixButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.startFixButton.Location = new System.Drawing.Point(383, 129);
+            this.startFixButton.Location = new System.Drawing.Point(383, 141);
             this.startFixButton.Name = "startFixButton";
             this.startFixButton.Size = new System.Drawing.Size(157, 56);
             this.startFixButton.TabIndex = 7;
@@ -199,17 +201,28 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(3, 208);
+            this.progressBar1.Location = new System.Drawing.Point(3, 233);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(537, 16);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 8;
             // 
+            // PayWithDebtCheckBox
+            // 
+            this.PayWithDebtCheckBox.AutoSize = true;
+            this.PayWithDebtCheckBox.Location = new System.Drawing.Point(3, 62);
+            this.PayWithDebtCheckBox.Name = "PayWithDebtCheckBox";
+            this.PayWithDebtCheckBox.Size = new System.Drawing.Size(271, 17);
+            this.PayWithDebtCheckBox.TabIndex = 3;
+            this.PayWithDebtCheckBox.Text = "Удалить пени и оплату с учетом задолженности";
+            this.PayWithDebtCheckBox.UseVisualStyleBackColor = true;
+            this.PayWithDebtCheckBox.CheckedChanged += new System.EventHandler(this.PayWithDebtCheckBox_CheckedChanged);
+            // 
             // mainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(543, 227);
+            this.ClientSize = new System.Drawing.Size(543, 249);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.progressBar1);
             this.DoubleBuffered = true;
@@ -242,6 +255,7 @@
         private System.Windows.Forms.CheckBox deleteReasonCheckBox;
         private System.Windows.Forms.Button startFixButton;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.CheckBox PayWithDebtCheckBox;
     }
 }
 

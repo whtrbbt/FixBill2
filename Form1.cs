@@ -22,6 +22,7 @@ namespace FixBill2
             deleteReasonCheckBox.Checked = Properties.Settings.Default.DELETE_REASON;
             replaceSignCheckBox.Checked = Properties.Settings.Default.REPLACE_SIGN;
             unzipCheckBox.Checked = Properties.Settings.Default.UNZIP;
+            PayWithDebtCheckBox.Checked = Properties.Settings.Default.DELETE_PAYWITHDEBT;
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
@@ -72,6 +73,12 @@ namespace FixBill2
         private void UnzipCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.UNZIP = unzipCheckBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void PayWithDebtCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.DELETE_PAYWITHDEBT = PayWithDebtCheckBox.Checked;
             Properties.Settings.Default.Save();
         }
 
@@ -199,6 +206,9 @@ namespace FixBill2
                 FixReason(wb);
             if (Properties.Settings.Default.REPLACE_SIGN)
                 FixManager(wb, "Заместитель генерального директора\nРоманова Ю.В.\nпо доверенности № 17 от 27.03.2020");
+            if (Properties.Settings.Default.DELETE_PAYWITHDEBT)
+                FixPayWithDebt(wb);
+
 
             if (outFileName != "")
                 wb.SaveAs(outFileName);
@@ -238,6 +248,35 @@ namespace FixBill2
             excelcells.EntireRow.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
             excelcells.EntireRow.VerticalAlignment = Excel.XlVAlign.xlVAlignBottom;
             excelcells.EntireRow.RowHeight = 60;
+        }
+
+        public static void FixPayWithDebt(in Excel.Workbook wb)
+        {
+            Excel.Worksheet wsh = wb.Worksheets.get_Item(1) as Excel.Worksheet;
+
+            Excel.Range excelcells;
+            Excel.Range currentFind = null;
+            //Excel.Range firstFind = null;
+
+            excelcells = wsh.get_Range("A20");
+            currentFind = excelcells.Find("Итого к оплате с учетом задолженности:", Type.Missing,
+          Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart,
+          Excel.XlSearchOrder.xlByRows, Excel.XlSearchDirection.xlNext);
+            if (currentFind != null)
+            {
+                excelcells = currentFind.EntireRow;
+                excelcells.Delete(Excel.XlDeleteShiftDirection.xlShiftToLeft);
+            }
+            excelcells = wsh.get_Range("A20");
+            currentFind = excelcells.Find("Сумма пени на", Type.Missing,
+          Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart,
+          Excel.XlSearchOrder.xlByRows, Excel.XlSearchDirection.xlNext);
+            if (currentFind != null)
+            {
+                excelcells = currentFind.EntireRow;
+                excelcells.Delete(Excel.XlDeleteShiftDirection.xlShiftToLeft);
+            }
+
         }
 
         public static void FixAdress(in Excel.Workbook wb, double rowHeight = 12.75, int trimLenght = 90, int rowAmount = 2)
@@ -300,5 +339,7 @@ namespace FixBill2
             //wb.Close();
             exc.Quit();
         }
+
+
     }
 }

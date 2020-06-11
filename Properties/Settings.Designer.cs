@@ -82,5 +82,16 @@ namespace FixBill2.Properties {
                 this["UNZIP"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool DELETE_PAYWITHDEBT {
+            get {
+                return ((bool)(this["DELETE_PAYWITHDEBT"]));
+            }
+            set {
+                this["DELETE_PAYWITHDEBT"] = value;
+            }
+        }
     }
 }
